@@ -5,20 +5,26 @@
 #include <stdint.h>
 
 /* start with 4096 page size */
-#define PAGE_SIZE 4096
+#define PS 4096
 
-/* Make the "size" to the next size up of PAGE_SIZE */
-#define ALIGN_SIZE(size) (((size) + sizeof(Block) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
+/* Make the "size" to the next size up of PS */
+#define ALIGN_SIZE(size) (((size) + sizeof(Block) + PS - 1) & ~(PS - 1))
 
-/* Struct for memory blocks */
-typedef struct Block {
-    size_t size;
-    struct Block *next;
+/**
+* struct Block - stores metadata for each memory block
+* @size: total number of bytes allocated for the block (including header)
+* @next: number of bytes used by the user (excluding header)
+*/
+typedef struct Block
+{
+	size_t size;          /* Size of the block, including the header */
+	struct Block *next;  /* Pointer to the next free block in the free list */
 } Block;
 
-/* free_list */
+/* Head of the free list */
 extern Block *free_list;
 
+/* Function prototypes */
 void *naive_malloc(size_t size);
 void *_malloc(size_t size);
 void _free(void *ptr);
